@@ -2,9 +2,9 @@ import random
 
 def board(size):
     board = []
-    for i in range(size):
+    for _ in range(size):
         rows = []
-        for i in range(size):
+        for _ in range(size):
             cells = "."
             rows.append(cells)
         board.append(rows)
@@ -20,13 +20,67 @@ def validate_input(cell_input):
         return True
     return True
 
+def placeAdjacentShips(shipLocations, row, col, axis, givenShipDict):
+    adjacentSpacesTried = 0
+    index = None
+    if axis == "row":
+        index = 0
+        axisValue = row
+    else:
+        index = 1
+        axisValue = col
+
+    directionToMakeAdjacentSpace = random.choice([1, -1])
+    while adjacentSpacesTried < 2:
+        repeatedSpace = False
+        maxAxisValue = None
+        minAxisValue = None
+        for location in shipLocations:
+            if maxAxisValue == None:
+                minAxisValue = maxAxisValue = location[index]
+            elif location[index] == None:
+                continue
+            elif location[index] > maxAxisValue:
+                maxAxisValue = location[index]
+            elif location[index] < minAxisValue:
+                minAxisValue = location[index]
+        if adjacentSpacesTried != 0:
+            if directionToMakeAdjacentSpace == 1:
+                directionToMakeAdjacentSpace = -1
+            if directionToMakeAdjacentSpace == -1:
+                directionToMakeAdjacentSpace = 1
+
+        if directionToMakeAdjacentSpace == 1:
+            axisValue = maxAxisValue + 1
+        else:
+            axisValue = minAxisValue - 1
+        adjacentSpacesTried += 1
+        if axisValue < 0 or axisValue > 9:
+                continue
+        if axis == "col":
+            for ships in givenShipDict:
+                if [row, axisValue] in givenShipDict[ships]["location"]:
+                    repeatedSpace = True
+                    break
+        else:
+            for ships in givenShipDict:
+                if [axisValue, col] in givenShipDict[ships]["location"]:
+                    repeatedSpace = True
+                    break
+        if repeatedSpace:
+            continue
+        return axisValue
+    return False
+
+
 def ship_placement(board, placementProcess, givenShipDict):
-    for ship in givenShipDict:
+    for ship in givenShipDict.items():
         spacesPlaced = 0
-        shipLength = givenShipDict[ship]['length']
+        shipLength = ship[1]['length']
         orientation = random.choice(["horizontal", "vertical"])
         row = None
         col = None
+        check2 = True
         while spacesPlaced < shipLength:
 
             spaceNotOpen = True
@@ -38,32 +92,27 @@ def ship_placement(board, placementProcess, givenShipDict):
                     col = random.randint(0,len(board)-1)
                 elif spacesPlaced > 0 and placementProcess == "randomly":
                     if orientation == "vertical":
-                        while True:
-                            row = row + random.choice([1, -1])
-                            if row > len(board)-1:
-                                row -= 1
-                                continue
-                            elif row < 0: 
-                                row += 1
-                                continue
-                            if row <= len(board)-1 and row >= 0:
-                                    break
+                        row = placeAdjacentShips(ship[1]["location"], row, col, "row", givenShipDict)
                     elif orientation == "horizontal":
-                        while True:
-                            col = col + random.choice([1, -1])
-                            if col > len(board):
-                                col -= 1
-                                continue
-                            elif col < 0: 
-                                col += 1
-                                continue
-                            if col < len(board) and col >= 0:
-                                break
+                        col = placeAdjacentShips(ship[1]["location"], row, col, "col", givenShipDict)
+                    if str(row) == "False" or str(col) == "False":
+                        spaceNotOpen = True
+                        spacesPlaced = 0
+                        ship[1]["location"] = []
+                        for _ in range(ship[1]["length"]):
+                            ship[1]['location'].append([None, None])
+                        continue
+
                 elif placementProcess == "manually":
                     check = True
                     while check:
-                        spaceInput = input(f"Please enter cell eg (A1,B2,C3) for {ship}: ")
-                        spaceInput = input(f"Please enter cell eg (A1,B2,C3) for {ship}: ").upper()
+                        while check2:
+                            orientation = input(f"Would you like to place your {ship[0]} horizontal or vertical: ")
+                            if orientation not in ["horizontal","vertical"]:
+                                print("Please Put a Valid Input")
+                            else:
+                                check2 = False
+                        spaceInput = input(f"Please enter cell eg (A1,B2,C3) for {ship[0]}: ").upper()
                         check = validate_input(spaceInput)
                         if check == True:
                             print("Please enter a valid coordinate")
@@ -74,22 +123,42 @@ def ship_placement(board, placementProcess, givenShipDict):
                             print("Please enter a valid coordinate")
                         if spacesPlaced > 0:
                                 check = True
-                                for location in givenShipDict[ship]["location"]:
-                                    if location[0] == None:
-                                        continue
-                                    elif (location[0] == row and abs(location[1] - col) == 1) or (abs(location[0] - row) == 1 and location[1] == col):                                           
-                                        check = False
+                                for shipss in givenShipDict:
+                                    for location in givenShipDict[shipss]["location"]:
+                                        if location[0] == None:
+                                            continue
+                                        elif (location[0] == row and abs(location[1] - col) == 1 and orientation == "horizontal"):
+                                            check = False
+                                        elif (abs(location[0] - row) == 1 and location[1] == col and orientation == "vertical"):                                           
+                                            check = False
                                 if check:
-                                    print("Coordinates of the same ship must be adjacent")
+                                    print(f"Coordinates of the same ship must be adjacent and {orientation}")
 
                 for ships in givenShipDict:
                     if [row, col] in givenShipDict[ships]["location"]:
                         spaceNotOpen = True
-                if spaceNotOpen == True:
+                if spaceNotOpen == True and placementProcess == "manually":
                     print("Space has already been used")
 
-            givenShipDict[ship]["location"][spacesPlaced] = [row, col]
+            ship[1]['location'][spacesPlaced] = [row, col]
             spacesPlaced += 1
+
+def playerDisplay(playerBoard,playerDict):
+    for ships in playerDict:
+        for i in range(len(playerDict[ships]['location'])):
+            row = playerDict[ships]['location'][i][0]
+            col = playerDict[ships]['location'][i][1]
+            if ships == "destroyer":
+                playerBoard[row][col] = "⛵"
+            elif ships == "submarine":
+                playerBoard[row][col] = "🚤"
+            elif ships == "cruiser":
+                playerBoard[row][col] = "🛥️"
+            elif ships == "battleship":
+                playerBoard[row][col] = "⛴"
+            elif ships == "carrier":
+                playerBoard[row][col] = "⛴️"
+
 
 
 def win_checker(playerShips,computerShips):
@@ -122,9 +191,6 @@ def printboard(board):
             print(f"{cells} \t",end="")
         print("\t")
 
-
-
-
 def hitShip(turnNumber, rowIndex, columnIndex):
     if turnNumber % 2 == 1:
         currentPlayerDict = computerShips
@@ -150,6 +216,8 @@ def hitShip(turnNumber, rowIndex, columnIndex):
                 numberOfTimesHitShipPrint += 1
             if not currentPlayerDict[ship]["location"]:
                 print(f"{ship} SUNK")
+            printboard(currentBoard)
+            return
         elif hitShip == False and numberOfShipsChecked == len(currentPlayerDict):
             currentBoard[rowIndex][columnIndex] = "X"
             print("SHIP MISSED")
@@ -162,25 +230,51 @@ if __name__ == '__main__':
     # Dictionary of ships and their locations
 
     playerShips = {
-        "dinghy" : {
-            "length" : 1,
-            "location" :[[None, None]] 
+        "carrier" : {
+            "length" : 5,
+            "location" : [[None, None], [None, None], [None, None], [None, None], [None, None]]
         },
+
         "destroyer" : {
             "length" : 2,
             "location" :[[None, None], [None, None]] 
-                }
+                },
+        "cruiser" : {
+                "length" : 3,
+                "location" : [[None, None], [None, None], [None, None]]
+                },
+        "submarine" : {
+                        "length" : 3,
+                        "location" : [[None, None], [None, None], [None, None]]
+                        },
+        "battleship" : {
+                        "length" : 4,
+                        "location" : [[None, None], [None, None], [None, None], [None, None]]
+                        },
     }
 
     computerShips = {
-        "dinghy" : {
-            "length" : 1,
-            "location" :[[None, None]] 
+        "carrier" : {
+            "length" : 5,
+            "location" : [[None, None], [None, None], [None, None], [None, None], [None, None]]
         },
+
         "destroyer" : {
             "length" : 2,
             "location" :[[None, None], [None, None]] 
-                }
+                },
+        "cruiser" : {
+                "length" : 3,
+                "location" : [[None, None], [None, None], [None, None]]
+                },
+        "submarine" : {
+                        "length" : 3,
+                        "location" : [[None, None], [None, None], [None, None]]
+                        },
+        "battleship" : {
+                        "length" : 4,
+                        "location" : [[None, None], [None, None], [None, None], [None, None]]
+                        },
     }
 
     # Asks if player wants to place ships manually or automatically
@@ -197,24 +291,14 @@ if __name__ == '__main__':
     playerBoard = None
     computerBoard = None
 
-    invalidSizeOfBoard = True
-
-    while invalidSizeOfBoard:
-        try:
-            sizeOfBoard = int(input("Enter size of board (4-10): "))
-            if sizeOfBoard < 4 or sizeOfBoard > 10:
-                print("Please only enter numbers in the range 4-10")
-                continue
-            playerBoard = board(sizeOfBoard)
-            computerBoard = board(sizeOfBoard)
-            invalidSizeOfBoard = False
-
-        except ValueError:
-            print("Please only enter integers")
+    sizeOfBoard = 10
+    playerBoard = board(sizeOfBoard)
+    computerBoard = board(sizeOfBoard)
 
     # Loops through each ship in a given dictionary
     # Places ships on the board
     ship_placement(playerBoard, userShipPlacementProcess, playerShips)
+    playerDisplay(playerBoard,playerShips)
     ship_placement(computerBoard, "randomly", computerShips)
 
     winner = None
@@ -245,7 +329,7 @@ if __name__ == '__main__':
             else:
                 columnIndex = random.randint(0, len(computerBoard) - 1)
                 rowIndex = random.randint(0, len(computerBoard) - 1)
-                if validate_input(f"{chr(columnIndex+65)}{rowIndex+1}") == False and playerBoard[rowIndex][columnIndex] == ".": 
+                if validate_input(f"{chr(columnIndex+65)}{rowIndex+1}") == False and computerBoard[rowIndex][columnIndex] == ".": 
                     guessIsOffOfBoard = False
                 else:
                     continue
