@@ -155,6 +155,7 @@ def playerDisplay(playerBoard,playerDict):
                 playerBoard[row][col] = "S"
             elif ships == "submarine":
                 playerBoard[row][col] = "S"
+                playerBoard[row][col] = "S"
             elif ships == "cruiser":
                 playerBoard[row][col] = "S"
             elif ships == "battleship":
@@ -179,7 +180,7 @@ def win_checker(playerShips,computerShips):
     return None,True 
 
 
-def printboard(board):
+def printboard(board,turn):
     columns = [chr(65+int(colNumber)) for colNumber in range(sizeOfBoard)]
     print("\t",end="")
     for x in columns:
@@ -231,11 +232,12 @@ def hitShip(turnNumber, rowIndex, columnIndex):
     if turnNumber % 2 == 1:
         currentPlayerDict = computerShips
         currentBoard = computerBoard
+        turn = 0
         print("YOUR TURN")
     else:
-
         currentPlayerDict = playerShips
         currentBoard = playerBoard
+        turn = 1
         print("COMPUTER'S TURN")
         print(f"COMPUTER GUESSED: {chr(columnIndex +65)}{rowIndex + 1}")
     hitShip = False
@@ -246,7 +248,7 @@ def hitShip(turnNumber, rowIndex, columnIndex):
             currentPlayerDict[ship]["location"].remove([rowIndex,columnIndex])
             hitShip = True
         if hitShip:
-            currentBoard[rowIndex][columnIndex] = "💥"
+            currentBoard[rowIndex][columnIndex] = "H"
             if numberOfTimesHitShipPrint == 0:
                 print("SHIP HIT")
                 numberOfTimesHitShipPrint += 1
@@ -258,7 +260,7 @@ def hitShip(turnNumber, rowIndex, columnIndex):
             currentBoard[rowIndex][columnIndex] = "X"
             print("SHIP MISSED")
         numberOfShipsChecked += 1
-    printboard(currentBoard)
+    printboard(currentBoard,turn)
 
 
 if __name__ == '__main__':
@@ -266,47 +268,42 @@ if __name__ == '__main__':
     # ==========================================================
     # RGB MATRIX CONFIGURATION
     # ==========================================================
-    # matrixOptions = RGBMatrixOptions()
-    # matrixOptions.rows = 16
-    # matrixOptions.cols = 32
-    # matrixOptions.chain_length = 1
-    # matrixOptions.parallel = 1
-    # matrixOptions.hardware_mapping = "adafruit-hat"
-    # matrixOptions.gpio_slowdown = 4
-    # matrixOptions.disable_hardware_pulsing = True
+    matrixOptions = RGBMatrixOptions()
+    matrixOptions.rows = 16
+    matrixOptions.cols = 32
+    matrixOptions.chain_length = 1
+    matrixOptions.parallel = 1
+    matrixOptions.hardware_mapping = "adafruit-hat"
+    matrixOptions.gpio_slowdown = 4
+    matrixOptions.disable_hardware_pulsing = True
 
-    # matrixDisplay = RGBMatrix(options=matrixOptions)
-    # frameCanvas = matrixDisplay.CreateFrameCanvas()
+    matrixDisplay = RGBMatrix(options=matrixOptions)
+    frameCanvas = matrixDisplay.CreateFrameCanvas()
 
-    # screenWidth = matrixOptions.cols
-    # screenHeight = matrixOptions.rows
-
-
+    screenWidth = matrixOptions.cols
+    screenHeight = matrixOptions.rows
 
 
 
-    # for i in range(3):
-    #     for x in range(0,screenWidth):
-    #         frameCanvas.SetPixel(x,i,50,50,100)
-    #     for x in range(0,screenWidth):
-    #         frameCanvas.SetPixel(x,15 - i,50,50,100)
-    # for i in range(4):
-    #     for y in range(0,screenHeight):
-    #         frameCanvas.SetPixel(i,y,50,50,100)
-    #     for y in range(0,screenHeight):
-    #             frameCanvas.SetPixel(31 - i,y,50,50,100)
-    #     for y in range(0,screenHeight):
-    #         frameCanvas.SetPixel(14 + i,y,50,50,100)
 
-    # frameCanvas = matrixDisplay.SwapOnVSync(frameCanvas)
+
+    for i in range(3):
+        for x in range(0,screenWidth):
+            frameCanvas.SetPixel(x,i,50,50,100)
+        for x in range(0,screenWidth):
+            frameCanvas.SetPixel(x,15 - i,50,50,100)
+    for i in range(4):
+        for y in range(0,screenHeight):
+            frameCanvas.SetPixel(i,y,50,50,100)
+        for y in range(0,screenHeight):
+                frameCanvas.SetPixel(31 - i,y,50,50,100)
+        for y in range(0,screenHeight):
+            frameCanvas.SetPixel(14 + i,y,50,50,100)
+
+    frameCanvas = matrixDisplay.SwapOnVSync(frameCanvas)
         
 
-    # try:
-    #     while True:
-    #         time.sleep(1 / 60)
-    # except KeyboardInterrupt:
-    #     print("\nExiting cleanly...")
-    #     matrixDisplay.Clear()
+    
 
     # Dictionary of ships and their locations
 
@@ -386,6 +383,12 @@ if __name__ == '__main__':
     noWinner = True
     turnNumber = 1
     while noWinner:
+        try:
+            time.sleep(1 / 60)
+        except KeyboardInterrupt:
+            print("\nExiting cleanly...")
+            matrixDisplay.Clear()
+            break
         columnIndex = None
         rowIndex = None
         guessIsOffOfBoard = True
