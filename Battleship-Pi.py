@@ -1,4 +1,7 @@
+import math
+import time
 import random
+from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 def board(size):
     board = []
@@ -226,6 +229,51 @@ def hitShip(turnNumber, rowIndex, columnIndex):
 
 
 if __name__ == '__main__':
+
+    # ==========================================================
+    # RGB MATRIX CONFIGURATION
+    # ==========================================================
+    matrixOptions = RGBMatrixOptions()
+    matrixOptions.rows = 16
+    matrixOptions.cols = 32
+    matrixOptions.chain_length = 1
+    matrixOptions.parallel = 1
+    matrixOptions.hardware_mapping = "adafruit-hat"
+    matrixOptions.gpio_slowdown = 4
+    matrixOptions.disable_hardware_pulsing = True
+
+    matrixDisplay = RGBMatrix(options=matrixOptions)
+    frameCanvas = matrixDisplay.CreateFrameCanvas()
+
+    screenWidth = matrixOptions.cols
+    screenHeight = matrixOptions.rows
+
+
+
+
+
+    for i in range(3):
+        for x in range(0,screenWidth):
+            frameCanvas.SetPixel(x,i,50,50,100)
+        for x in range(0,screenWidth):
+            frameCanvas.SetPixel(x,15 - i,50,50,100)
+    for i in range(4):
+        for y in range(0,screenHeight):
+            frameCanvas.SetPixel(i,y,50,50,100)
+        for y in range(0,screenHeight):
+                frameCanvas.SetPixel(31 - i,y,50,50,100)
+        for y in range(0,screenHeight):
+            frameCanvas.SetPixel(14 + i,y,50,50,100)
+
+    frameCanvas = matrixDisplay.SwapOnVSync(frameCanvas)
+        
+
+    try:
+        while True:
+            time.sleep(1 / 60)
+    except KeyboardInterrupt:
+        print("\nExiting cleanly...")
+        matrixDisplay.Clear()
 
     # Dictionary of ships and their locations
 
