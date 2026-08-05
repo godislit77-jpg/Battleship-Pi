@@ -224,7 +224,7 @@ def printboard(board,turn):
                 elif cell == 'M':
                     frameCanvas.SetPixel(x, y, 0, 128, 128)                               
                 x += 1
-        y += 1
+            y += 1
 
     frameCanvas = matrixDisplay.SwapOnVSync(frameCanvas)
     
