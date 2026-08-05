@@ -198,19 +198,25 @@ def playerDisplay(playerBoard,playerDict):
                 playerBoard[row][col] = "S"
 
 
-def win_checker(playerShips,computerShips):
+def win_checker(player1Ships,player2Ships):
     sunk_ships = 0
-    for ship in playerShips:
-        if playerShips[ship]["health"] == 0:
+    for ship in player1Ships:
+        if player1Ships[ship]["health"] == 0:
             sunk_ships += 1
-    if sunk_ships == len(playerShips):
-        return "computer",False
+    if sunk_ships == len(player1Ships):
+        if mode == 's':
+            return "computer",False
+        else:
+            return "Player 2",False
     sunk_ships = 0
-    for ship in computerShips:
-        if computerShips[ship]["health"] == 0:
+    for ship in player2Ships:
+        if player2Ships[ship]["health"] == 0:
             sunk_ships += 1
-        if sunk_ships == len(computerShips):
-            return "player",False
+        if sunk_ships == len(player2Ships):
+            if mode == 's':
+                return "player",False
+            else:
+                return "Player 1",False
     return None,True 
 
 
@@ -292,16 +298,22 @@ def printboard(board,turn,frameCanvas):
     
 def hitShip(turnNumber, rowIndex, columnIndex,frameCanvas):
     if turnNumber % 2 == 1:
-        currentPlayerDict = computerShips
-        currentBoard = computerBoard
+        currentPlayerDict = player2Ships
+        currentBoard = player2Board
         turn = 0
-        print("YOUR TURN")
+        if mode == 's':
+            print("YOUR TURN")
+        else:
+            print("PLAYER 1'S TURN")
     else:
-        currentPlayerDict = playerShips
-        currentBoard = playerBoard
+        currentPlayerDict = player1Ships
+        currentBoard = player1Board
         turn = 1
-        print("COMPUTER'S TURN")
-        print(f"COMPUTER GUESSED: {chr(columnIndex +65)}{rowIndex + 1}")
+        if mode == 's':
+            print("COMPUTER'S TURN")
+            print(f"COMPUTER GUESSED: {chr(columnIndex +65)}{rowIndex + 1}")
+        else:
+            print("PLAYER 2'S TURN")
     hitShip = False
     numberOfShipsChecked = 1
     numberOfTimesHitShipPrint = 0
@@ -330,7 +342,7 @@ def hitShip(turnNumber, rowIndex, columnIndex,frameCanvas):
 if __name__ == '__main__':        
     # Dictionary of ships and their locations
 
-    playerShips = {
+    player1Ships = {
         "carrier" : {
             "length" : 5,
             "health":5,
@@ -359,7 +371,7 @@ if __name__ == '__main__':
                         },
     }
 
-    computerShips = {
+    player2Ships = {
         "carrier" : {
             "length" : 5,
             "health":5,
@@ -387,31 +399,47 @@ if __name__ == '__main__':
                         "location" : [[None, None], [None, None], [None, None], [None, None]]
                         },
     }
+
+    mode = input("Single or Multiplayer mode? (s/m): ").lower()
+    while mode != 's' or mode != 'm':
+        mode = input("Please select 's' or 'm': ").lower()
+
 
     # Asks if player wants to place ships manually or automatically
-    shipPlacementProcessBoolean = True
-    while shipPlacementProcessBoolean:
-        userShipPlacementProcess = input("Would you like to place the ships manually or randomly: ").lower().strip()
-        if userShipPlacementProcess == "manually" or userShipPlacementProcess == "randomly":
-            shipPlacementProcessBoolean = False
+    shipPlacementProcessBoolean1 = True
+    while shipPlacementProcessBoolean1:
+        player1ShipPlacementProcess = input("Would you like to place the ships manually or randomly: ").lower().strip()
+        if player1ShipPlacementProcess == "manually" or player1ShipPlacementProcess == "randomly":
+            shipPlacementProcessBoolean1 = False
         else:
             print("Please enter \"manually\" or \"randomly\"")
 
+    if mode == 's':
+        player2ShipPlacementProcess = 'randomly'
+    else:
+        shipPlacementProcessBoolean2 = True
+        while shipPlacementProcessBoolean2:
+            player2ShipPlacementProcess = input("Would you like to place the ships manually or randomly: ").lower().strip()
+            if player2ShipPlacementProcess == "manually" or player2ShipPlacementProcess == "randomly":
+                shipPlacementProcessBoolean2 = False
+            else:
+                print("Please enter \"manually\" or \"randomly\"")
+
     # Asks player for the size of the board and creates boards
 
-    playerBoard = None
-    computerBoard = None
+    player1Board = None
+    player2Board = None
 
     sizeOfBoard = 10
-    playerBoard = board(sizeOfBoard)
-    computerBoard = board(sizeOfBoard)
+    player1Board = board(sizeOfBoard)
+    player2Board = board(sizeOfBoard)
 
     # Loops through each ship in a given dictionary
     # Places ships on the board
-    ship_placement(playerBoard, userShipPlacementProcess, playerShips)
-    playerDisplay(playerBoard,playerShips)
-    ship_placement(computerBoard, "randomly", computerShips)
-
+    ship_placement(player1Board, player1ShipPlacementProcess, player1Ships)
+    ship_placement(player2Board, player2ShipPlacementProcess, player2Ships)
+    if mode == 's':
+        playerDisplay(player1Board,player1Ships)
     winner = None
     noWinner = True
     turnNumber = 1
@@ -427,7 +455,7 @@ if __name__ == '__main__':
         guessIsOffOfBoard = True
         validating = True
         while guessIsOffOfBoard:
-            if turnNumber % 2 == 1:
+            if turnNumber % 2 == 1 or mode == 'm':
                 while validating:
                     try:
                         guess = input("Guess where the ship is: ").strip().upper()
@@ -438,22 +466,30 @@ if __name__ == '__main__':
                     if validate_input(guess) == True:
                         print("Please enter a valid location")
                     else:
-                        if computerBoard[rowIndex][columnIndex] != ".":
-                            print("You already guessed this space")
+                        if turnNumber % 2 == 1:
+                            if player2Board[rowIndex][columnIndex] != ".":
+                                print("You already guessed this space")
+                            else:
+                                guessIsOffOfBoard = False
+                                validating = False
                         else:
-                            guessIsOffOfBoard = False
-                            validating = False
-            else:
-                columnIndex = random.randint(0, len(computerBoard) - 1)
-                rowIndex = random.randint(0, len(computerBoard) - 1)
-                if validate_input(f"{chr(columnIndex+65)}{rowIndex+1}") == False and playerBoard[rowIndex][columnIndex] == "." or playerBoard[rowIndex][columnIndex] == "S": 
+                            if player1Board[rowIndex][columnIndex] != ".":
+                                print("You already guessed this space")
+                            else:
+                                guessIsOffOfBoard = False
+                                validating = False                           
+            elif mode == 's':
+                columnIndex = random.randint(0, len(player2Board) - 1)
+                rowIndex = random.randint(0, len(player2Board) - 1)
+                if validate_input(f"{chr(columnIndex+65)}{rowIndex+1}") == False and player1Board[rowIndex][columnIndex] == "." or player1Board[rowIndex][columnIndex] == "S": 
                     guessIsOffOfBoard = False
                 else:
                     continue
+            
             hitShip(turnNumber, rowIndex, columnIndex,frameCanvas)
             turnNumber +=1 
 
-        winner,noWinner = win_checker(playerShips, computerShips)
+        winner,noWinner = win_checker(player1Ships, player2Ships)
 
     print("GAME OVER")
     print(f"WINNER: {winner}")
@@ -473,7 +509,7 @@ if __name__ == '__main__':
                     frameCanvas.SetPixel(14 + i,y,50,50,100)
             
             y = 3
-            for row in playerBoard:
+            for row in player1Board:
                 x = 4
                 for cell in row:
                     frameCanvas.SetPixel(x,y,0,200,0)
@@ -481,7 +517,7 @@ if __name__ == '__main__':
                 y += 1
                 
             y = 3
-            for row in computerBoard:
+            for row in player2Board:
                 x = 18
                 for cell in row:
                     frameCanvas.SetPixel(x,y,200,0,0)
@@ -502,7 +538,7 @@ if __name__ == '__main__':
                     frameCanvas.SetPixel(14 + i,y,50,50,100)
             
             y = 3
-            for row in playerBoard:
+            for row in player1Board:
                 x = 4
                 for cell in row:
                     frameCanvas.SetPixel(x,y,0,0,0)
@@ -510,7 +546,7 @@ if __name__ == '__main__':
                 y += 1
             
             y = 3
-            for row in computerBoard:
+            for row in player2Board:
                 x = 18
                 for cell in row:
                     frameCanvas.SetPixel(x,y,0,0,0)
@@ -533,7 +569,7 @@ if __name__ == '__main__':
                         frameCanvas.SetPixel(14 + i,y,50,50,100)
                 
                 y = 3
-                for com_row in computerBoard:
+                for com_row in player2Board:
                     x = 18
                     for cells in com_row:
                         frameCanvas.SetPixel(x,y,0,200,0)                             
@@ -541,7 +577,7 @@ if __name__ == '__main__':
                     y += 1
 
                 y = 3
-                for row in playerBoard:
+                for row in player1Board:
                     x = 4
                     for cell in row:
                         frameCanvas.SetPixel(x,y,200,0,0)
@@ -562,7 +598,7 @@ if __name__ == '__main__':
                         frameCanvas.SetPixel(14 + i,y,50,50,100)
                 
                 y = 3
-                for com_row in computerBoard:
+                for com_row in player2Board:
                     x = 18
                     for cells in com_row:
                         frameCanvas.SetPixel(x,y,0,0,0)                             
@@ -570,7 +606,7 @@ if __name__ == '__main__':
                     y += 1
                 
                 y = 3
-                for row in playerBoard:
+                for row in player1Board:
                     x = 4
                     for cell in row:
                         frameCanvas.SetPixel(x,y,0,0,0)
