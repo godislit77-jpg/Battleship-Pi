@@ -401,7 +401,7 @@ if __name__ == '__main__':
     }
 
     mode = input("Single or Multiplayer mode? (s/m): ").lower()
-    while mode != 's' or mode != 'm':
+    while mode != 's' and mode != 'm':
         mode = input("Please select 's' or 'm': ").lower()
 
 
