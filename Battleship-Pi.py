@@ -171,6 +171,7 @@ def ship_placement(board, placementProcess, givenShipDict):
                                 if check:
                                     print(f"Coordinates of the same ship must be adjacent and {orientation}")
 
+
                 for ships in givenShipDict:
                     if [row, col] in givenShipDict[ships]["location"]:
                         spaceNotOpen = True
@@ -179,6 +180,8 @@ def ship_placement(board, placementProcess, givenShipDict):
 
             ship[1]['location'][spacesPlaced] = [row, col]
             spacesPlaced += 1
+        if placementProcess == 'manually':
+            print("\n"*50)
 
 def playerDisplay(playerBoard,playerDict):
     for ships in playerDict:
@@ -436,7 +439,11 @@ if __name__ == '__main__':
 
     # Loops through each ship in a given dictionary
     # Places ships on the board
+    if player1ShipPlacementProcess == 'manually':
+        print("Player 1:")
     ship_placement(player1Board, player1ShipPlacementProcess, player1Ships)
+    if player2ShipPlacementProcess == 'manually':
+        print("Player 2:")
     ship_placement(player2Board, player2ShipPlacementProcess, player2Ships)
     if mode == 's':
         playerDisplay(player1Board,player1Ships)
