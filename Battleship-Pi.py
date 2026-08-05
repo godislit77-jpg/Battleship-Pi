@@ -180,8 +180,8 @@ def ship_placement(board, placementProcess, givenShipDict):
 
             ship[1]['location'][spacesPlaced] = [row, col]
             spacesPlaced += 1
-        if placementProcess == 'manually':
-            print("\n"*50)
+    if placementProcess == 'manually':
+        print("\n"*50)
 
 def playerDisplay(playerBoard,playerDict):
     for ships in playerDict:
