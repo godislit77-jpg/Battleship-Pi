@@ -408,7 +408,7 @@ if __name__ == '__main__':
     # Asks if player wants to place ships manually or automatically
     shipPlacementProcessBoolean1 = True
     while shipPlacementProcessBoolean1:
-        player1ShipPlacementProcess = input("Would you like to place the ships manually or randomly: ").lower().strip()
+        player1ShipPlacementProcess = input("Player 1: Would you like to place the ships manually or randomly: ").lower().strip()
         if player1ShipPlacementProcess == "manually" or player1ShipPlacementProcess == "randomly":
             shipPlacementProcessBoolean1 = False
         else:
@@ -419,7 +419,7 @@ if __name__ == '__main__':
     else:
         shipPlacementProcessBoolean2 = True
         while shipPlacementProcessBoolean2:
-            player2ShipPlacementProcess = input("Would you like to place the ships manually or randomly: ").lower().strip()
+            player2ShipPlacementProcess = input("Player 2: Would you like to place the ships manually or randomly: ").lower().strip()
             if player2ShipPlacementProcess == "manually" or player2ShipPlacementProcess == "randomly":
                 shipPlacementProcessBoolean2 = False
             else:
