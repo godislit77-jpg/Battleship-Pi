@@ -97,6 +97,7 @@ while shipAnimationLast[-1][1] >= -20:
             cell[0] -= 1
     i += 1
 
+matrixDisplay.Clear()
 for i in range(3):
     for x in range(0,screenWidth):
         frameCanvas.SetPixel(x,i,50,50,100)
@@ -419,68 +420,66 @@ def hitShip(turnNumber, rowIndex, columnIndex,frameCanvas):
         numberOfShipsChecked += 1
     printboard(currentBoard,turn,frameCanvas)
 
+player1Ships = {
+            "carrier" : {
+                "length" : 5,
+                "health":5,
+                "location" : [[None, None], [None, None], [None, None], [None, None], [None, None]]
+            },
+    
+            "destroyer" : {
+                "length" : 2,
+                "health":2,
+                "location" :[[None, None], [None, None]] 
+                    },
+            "cruiser" : {
+                    "length" : 3,
+                    "health":3,
+                    "location" : [[None, None], [None, None], [None, None]]
+                    },
+            "submarine" : {
+                            "length" : 3,
+                            "health":3,
+                            "location" : [[None, None], [None, None], [None, None]]
+                            },
+            "battleship" : {
+                            "length" : 4,
+                            "health":4,
+                            "location" : [[None, None], [None, None], [None, None], [None, None]]
+                            },
+        }
+    
+player2Ships = {
+            "carrier" : {
+                "length" : 5,
+                "health":5,
+                "location" : [[None, None], [None, None], [None, None], [None, None], [None, None]]
+            },
+    
+            "destroyer" : {
+                "length" : 2,
+                "health":2,
+                "location" :[[None, None], [None, None]] 
+                    },
+            "cruiser" : {
+                    "length" : 3,
+                    "health":3,
+                    "location" : [[None, None], [None, None], [None, None]]
+                    },
+            "submarine" : {
+                            "length" : 3,
+                            "health":3,
+                            "location" : [[None, None], [None, None], [None, None]]
+                            },
+            "battleship" : {
+                            "length" : 4,
+                            "health":4,
+                            "location" : [[None, None], [None, None], [None, None], [None, None]]
+                            },
+        }
 
-if __name__ == '__main__':        
-    # Dictionary of ships and their locations
-
-    player1Ships = {
-        "carrier" : {
-            "length" : 5,
-            "health":5,
-            "location" : [[None, None], [None, None], [None, None], [None, None], [None, None]]
-        },
-
-        "destroyer" : {
-            "length" : 2,
-            "health":2,
-            "location" :[[None, None], [None, None]] 
-                },
-        "cruiser" : {
-                "length" : 3,
-                "health":3,
-                "location" : [[None, None], [None, None], [None, None]]
-                },
-        "submarine" : {
-                        "length" : 3,
-                        "health":3,
-                        "location" : [[None, None], [None, None], [None, None]]
-                        },
-        "battleship" : {
-                        "length" : 4,
-                        "health":4,
-                        "location" : [[None, None], [None, None], [None, None], [None, None]]
-                        },
-    }
-
-    player2Ships = {
-        "carrier" : {
-            "length" : 5,
-            "health":5,
-            "location" : [[None, None], [None, None], [None, None], [None, None], [None, None]]
-        },
-
-        "destroyer" : {
-            "length" : 2,
-            "health":2,
-            "location" :[[None, None], [None, None]] 
-                },
-        "cruiser" : {
-                "length" : 3,
-                "health":3,
-                "location" : [[None, None], [None, None], [None, None]]
-                },
-        "submarine" : {
-                        "length" : 3,
-                        "health":3,
-                        "location" : [[None, None], [None, None], [None, None]]
-                        },
-        "battleship" : {
-                        "length" : 4,
-                        "health":4,
-                        "location" : [[None, None], [None, None], [None, None], [None, None]]
-                        },
-    }
-
+debug = input("y/n")
+if debug == "y":     
     mode = input("Single or Multiplayer mode? (s/m): ").lower()
     while mode != 's' and mode != 'm':
         mode = input("Please select 's' or 'm': ").lower()
@@ -579,155 +578,182 @@ if __name__ == '__main__':
     print("GAME OVER")
     print(f"WINNER: {winner}")
 
-shipAnimation = [[7,31],[8,31],[6,32],[7,32],[8,32],[9,32],[6,33],[7,33],[8,33],
-                 [9,33],[10,33],[6,34],[7,34],[8,34],[9,34],[10,34],[5,35],
-                 [6,35],[7,35],[8,35],[9,35],[10,35],[5,36],[7,36],[8,36],[9,36],
-                 [10,36],[5,37],[6,37],[7,37],[8,37],[9,37],[10,37],[5,38],[6,38],
-                 [7,38],[8,38],[9,38],[10,38],[7,39],[8,39],[9,39],[10,39],[7,40],
-                 [8,40],[9,40],[7,41],[8,41]]
-losingShipAnimation = [[0,9],[0,10],[1,9],[1,10],[1,11],[2,9],[2,10], [2,11],[2,12],[3,7],[3,8],[3,9],[3,10],[3,11],
-                    [3,12],[4,7],[4,9],[4,10],[4,11],[4,12],[5,7],[5,8],[5,9],[5,10],[5,11],[5,12],[6,7],[6,8],[6,9],
-                    [6,10],[6,11],[6,12],[7,8],[7,9],[7,10],[7,11],[7,12],[8,8],[8,9],[8,10],[8,11],[8,12],[9,8],[9,9],
-                    [9,10],[9,11],[10,9],[10,10]]
-wave1 = [[10,0],[10,1],[11,2],[12,3],[12,4],[11,5],[10,6],[10,7],[11,8],[12,9],[12,10],
-        [11,11],[10,12],[10,13],[11,14],[12,15],[12,16],[11,17],[10,18],[10,19],[11,20]
-        ,[12,21],[12,22],[11,23],[10,24],[10,25],[11,26],[12,27],[12,28],[11,29],[10,30],[10,31]]
-wave2 = [[10,0],[10,1],[11,2],[12,3],[12,4],[11,5],[10,6],[10,7],[11,8],[12,9],[12,10],
-        [11,11],[10,12],[10,13],[11,14],[12,15],[12,16],[11,17],[10,18],[10,19],[11,20]
-        ,[12,21],[12,22],[11,23],[10,24],[10,25],[11,26],[12,27],[12,28],[11,29],[10,30],[10,31]]
-bomb = [[21,9],[20,9],[22,9],[21,8],[21,10]]
-player_text = [[3,2],[3,3],[3,4],[3,5],[3,6],[4,2],[4,4],[5,3],[7,2],[7,3],[7,4],[7,5],[7,6],[8,6],
-               [9,6],[11,3],[11,4],[11,5],[11,6],[12,2],[12,5],[13,3],[13,4],[13,5],[13,6],[15,2],
-               [16,3],[16,4],[16,5],[16,6],[17,2],[19,2],[19,3],[19,4],[19,5],[19,6],[20,2],[20,4],
-               [20,6],[21,2],[21,4],[21,6],[23,2],[23,3],[23,4],[23,5],[23,6],[24,2],[24,4],[25,3],
-               [25,5],[25,6]]
-win_text = [[7,7],[7,8],[7,9],[7,10],[8,11],[9,10],[10,11],[11,7],[11,8],[11,9],[11,10],[13,7],
-             [13,8],[13,9],[13,10],[13,11],[15,7],[15,8],[15,9],[15,10],[15,11],[16,8],[17,9],[18,7],
-             [18,8],[18,9],[18,10],[18,11],[20,7],[20,8],[20,9],[20,11],[21,7],[21,9],[21,11],[22,7],
-             [22,9],[22,10],[22,11],[24,7],[24,8],[24,9],[24,11]]
-numb_1 = [[27,3],[27,6],[28,2],[28,3],[28,4],[28,5],[28,6],[29,6]]
-numb_2 = [[27,3],[27,6],[28,2],[28,5],[28,6],[29,3],[29,4],[29,6]]
-
-grid = []
-for row in range(screenHeight):
-    for col in range(screenWidth):
-        grid.append([col+34,row])
-if winner == "Player 1":
-    winner_num = numb_1
 else:
-    winner_num = numb_2
-        
-i = 0
-check = 0
+    mode = "s"
+    winner = "player"
+    shipAnimation = [[7,31],[8,31],[6,32],[7,32],[8,32],[9,32],[6,33],[7,33],[8,33],
+                    [9,33],[10,33],[6,34],[7,34],[8,34],[9,34],[10,34],[5,35],
+                    [6,35],[7,35],[8,35],[9,35],[10,35],[5,36],[7,36],[8,36],[9,36],
+                    [10,36],[5,37],[6,37],[7,37],[8,37],[9,37],[10,37],[5,38],[6,38],
+                    [7,38],[8,38],[9,38],[10,38],[7,39],[8,39],[9,39],[10,39],[7,40],
+                    [8,40],[9,40],[7,41],[8,41]]
+    losingShipAnimation = [[0,9],[0,10],[1,9],[1,10],[1,11],[2,9],[2,10], [2,11],[2,12],[3,7],[3,8],[3,9],[3,10],[3,11],
+                        [3,12],[4,7],[4,9],[4,10],[4,11],[4,12],[5,7],[5,8],[5,9],[5,10],[5,11],[5,12],[6,7],[6,8],[6,9],
+                        [6,10],[6,11],[6,12],[7,8],[7,9],[7,10],[7,11],[7,12],[8,8],[8,9],[8,10],[8,11],[8,12],[9,8],[9,9],
+                        [9,10],[9,11],[10,9],[10,10]]
+    wave1 = [[10,0],[10,1],[11,2],[12,3],[12,4],[11,5],[10,6],[10,7],[11,8],[12,9],[12,10],
+            [11,11],[10,12],[10,13],[11,14],[12,15],[12,16],[11,17],[10,18],[10,19],[11,20]
+            ,[12,21],[12,22],[11,23],[10,24],[10,25],[11,26],[12,27],[12,28],[11,29],[10,30],[10,31]]
+    wave2 = [[10,0],[10,1],[11,2],[12,3],[12,4],[11,5],[10,6],[10,7],[11,8],[12,9],[12,10],
+            [11,11],[10,12],[10,13],[11,14],[12,15],[12,16],[11,17],[10,18],[10,19],[11,20]
+            ,[12,21],[12,22],[11,23],[10,24],[10,25],[11,26],[12,27],[12,28],[11,29],[10,30],[10,31]]
+    bomb = [[21,9],[20,9],[22,9],[21,8],[21,10]]
+    player_text = [[3,2],[3,3],[3,4],[3,5],[3,6],[4,2],[4,4],[5,3],[7,2],[7,3],[7,4],[7,5],[7,6],[8,6],
+                [9,6],[11,3],[11,4],[11,5],[11,6],[12,2],[12,5],[13,3],[13,4],[13,5],[13,6],[15,2],
+                [16,3],[16,4],[16,5],[16,6],[17,2],[19,2],[19,3],[19,4],[19,5],[19,6],[20,2],[20,4],
+                [20,6],[21,2],[21,4],[21,6],[23,2],[23,3],[23,4],[23,5],[23,6],[24,2],[24,4],[25,3],
+                [25,5],[25,6]]
+    computer_text = [[0,2],[0,3],[0,4],[0,5],[0,6],[1,2],[1,6],[2,2],[2,6],[4,2],[4,3],[4,4],[4,5],[4,6],
+                    [5,2],[5,6],[6,2],[6,3],[6,4],[6,5],[6,6],[8,3],[8,4],[8,5],[8,6],[9,2],[10,3],[10,4],
+                    [11,2],[12,3],[12,4],[12,5],[12,6],[14,2],[14,3],[14,4],[14,5],[14,6],[15,2],[15,4],
+                    [16,3],[18,2],[18,3],[18,4],[18,5],[18,6],[19,6],[20,2],[20,3],[20,4],[20,5],[20,6],
+                    [22,2],[23,2],[23,3],[23,4],[23,5],[23,6],[24,2],[26,2],[26,3],[26,4],[26,5],[26,6],
+                    [27,2],[27,4],[27,6],[29,2],[29,3],[29,4],[29,5],[29,6],[30,2],[30,4],[31,3],[31,5],
+                    [31,6]]
+    win_text = [[7,7],[7,8],[7,9],[7,10],[8,11],[9,10],[10,11],[11,7],[11,8],[11,9],[11,10],[13,7],
+                [13,8],[13,9],[13,10],[13,11],[15,7],[15,8],[15,9],[15,10],[15,11],[16,8],[17,9],[18,7],
+                [18,8],[18,9],[18,10],[18,11],[20,7],[20,8],[20,9],[20,11],[21,7],[21,9],[21,11],[22,7],
+                [22,9],[22,10],[22,11],[24,7],[24,8],[24,9],[24,11]]
+    numb_1 = [[27,3],[27,6],[28,2],[28,3],[28,4],[28,5],[28,6],[29,6]]
+    numb_2 = [[27,3],[27,6],[28,2],[28,5],[28,6],[29,3],[29,4],[29,6]]
 
-while True:
-    matrixDisplay.Clear()
-    frameCanvas = matrixDisplay.SwapOnVSync(frameCanvas)
-    for cell in wave1:
-        frameCanvas.SetPixel(cell[1],cell[0],4,55,242)
-    for cell in wave2:
-            frameCanvas.SetPixel(cell[1] - 2,cell[0] + 2,4,55,150)
-    for cell in shipAnimation:
-        frameCanvas.SetPixel(cell[1] + 5,cell[0] + 2,173,216,230)
-    for cell in losingShipAnimation:
-        if check >= 36:
-            if losingShipAnimation.index(cell) <= 31:
-                frameCanvas.SetPixel(cell[0] - 15,cell[1],173,216,230)
+    grid = []
+    for row in range(screenHeight):
+        for col in range(screenWidth):
+            grid.append([col+34,row])     
+
+    if mode == "s":
+        if winner == "player":
+            winner_num = None
         else:
-            frameCanvas.SetPixel(cell[0] - 15,cell[1],173,216,230)
-    time.sleep(.2)
-    if check <= 14:
-        for cell in shipAnimation:
-            cell[1] -= 1
-            if shipAnimation[0][1] == 16:
-                shipAnimation[0][1] -= 1
-        for cell in losingShipAnimation:
-            cell[0] += 1
+            player_text = computer_text
+            winner_num = None
+    elif mode == "m":
+        if winner == "Player 1":
+            winner_num = numb_1
+        else:
+            winner_num = numb_2
+                
+    i = 0
+    check = 0
 
-    if check >= 18:
-        if check == 18:
-            shipAnimation[0][1] += 1
-        if check <= 21:
-            frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
-            for cell in bomb:
-                cell[0] -= 1
-                cell[1] -= 1
-        elif check < 27:
-            cell_num = 0
-            for cell in bomb:
-                cell[0] -= 1
-                if cell_num != 0:
-                    frameCanvas.SetPixel(cell[0], cell[1], 255, 165, 0)
-                frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
-                cell_num += 1
-        elif check <= 31:
-            cell_num = 0
-            for cell in bomb:
-                cell[0] -= 1
-                cell[1] += 1
-                if cell_num != 0:
-                    frameCanvas.SetPixel(cell[0], cell[1], 255, 165, 0)
-                frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
-                cell_num += 1
-        elif check == 32:
-            bomb.append([5,10])
-            bomb.append([9,10])
-            bomb.append([7,12])
-            bomb.append([7,8])
-            bomb.append([8,9])
-            bomb.append([6,9])
-            bomb.append([6,11])
-            bomb.append([8,11])
-            cell_num = 0
-            frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
-            for cell in bomb:
-                if cell_num != 0:
-                    frameCanvas.SetPixel(cell[0], cell[1], 255, 165, 0)  
-                cell_num += 1
-        elif check <= 35:
-            cell_num = 0
-            frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
-            for cell in bomb:
-                if cell_num != 0 and cell_num <= 8:
-                    frameCanvas.SetPixel(cell[0], cell[1], 255, 165, 0)   
-                if check > 33:
-                    if cell_num > 8:
-                        frameCanvas.SetPixel(cell[0], cell[1], 255, 117, 24)
-                cell_num += 1  
-        elif 48 >= check >= 37:
-            for cell in losingShipAnimation:
-                cell[1] += 1
-        elif 84 > check > 48:
+    while True:
+        matrixDisplay.Clear()
+        frameCanvas = matrixDisplay.SwapOnVSync(frameCanvas)
+        for cell in wave1:
+            frameCanvas.SetPixel(cell[1],cell[0],4,55,242)
+        for cell in wave2:
+                frameCanvas.SetPixel(cell[1] - 2,cell[0] + 2,4,55,150)
+        for cell in shipAnimation:
+            frameCanvas.SetPixel(cell[1] + 5,cell[0] + 2,173,216,230)
+        for cell in losingShipAnimation:
+            if check >= 36:
+                if losingShipAnimation.index(cell) <= 31:
+                    frameCanvas.SetPixel(cell[0] - 15,cell[1],173,216,230)
+            else:
+                frameCanvas.SetPixel(cell[0] - 15,cell[1],173,216,230)
+        time.sleep(.2)
+        if check <= 14:
             for cell in shipAnimation:
                 cell[1] -= 1
-            for cell in grid:
-                frameCanvas.SetPixel(cell[0], cell[1], 50, 50, 50)
+                if shipAnimation[0][1] == 16:
+                    shipAnimation[0][1] -= 1
+            for cell in losingShipAnimation:
+                cell[0] += 1
+
+        if check >= 18:
+            if check == 18:
+                shipAnimation[0][1] += 1
+            if check <= 21:
+
+                frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
+                for cell in bomb:
+                    cell[0] -= 1
+                    cell[1] -= 1
+            elif check < 27:
+                cell_num = 0
+                for cell in bomb:
+                    cell[0] -= 1
+                    if cell_num != 0:
+                        frameCanvas.SetPixel(cell[0], cell[1], 255, 165, 0)
+                    frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
+                    cell_num += 1
+            elif check <= 31:
+                cell_num = 0
+                for cell in bomb:
+                    cell[0] -= 1
+                    cell[1] += 1
+                    if cell_num != 0:
+                        frameCanvas.SetPixel(cell[0], cell[1], 255, 165, 0)
+                    frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
+                    cell_num += 1
+            elif check == 32:
+                bomb.append([5,10])
+                bomb.append([9,10])
+                bomb.append([7,12])
+                bomb.append([7,8])
+                bomb.append([8,9])
+                bomb.append([6,9])
+                bomb.append([6,11])
+                bomb.append([8,11])
+                cell_num = 0
+                frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
+                for cell in bomb:
+                    print("bomb")
+                    if cell_num != 0:
+                        frameCanvas.SetPixel(cell[0], cell[1], 255, 165, 0)  
+                    cell_num += 1
+            elif check <= 35:
+                cell_num = 0
+                frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
+                for cell in bomb:
+                    if cell_num != 0 and cell_num <= 8:
+                        print("bomb")
+                        frameCanvas.SetPixel(cell[0], cell[1], 255, 165, 0)   
+                    if check > 33:
+                        if cell_num > 8:
+                            frameCanvas.SetPixel(cell[0], cell[1], 255, 117, 24)
+                    cell_num += 1  
+            elif 48 >= check >= 37:
+                for cell in losingShipAnimation:
+                    cell[1] += 1
+            elif 84 > check > 48:
+                for cell in shipAnimation:
+                    cell[1] -= 1
+                for cell in grid:
+                    print("grid")
+                    frameCanvas.SetPixel(cell[0], cell[1], 50, 50, 50)
+                    cell[0] -= 1
+                for cell in player_text:
+                    print("player text")
+                    frameCanvas.SetPixel(cell[0]+34, cell[1], 230, 0, 230)
+                    cell[0] -= 1
+                if winner_num != None:
+                    for cell in winner_num:
+                        print("winner num")
+                        frameCanvas.SetPixel(cell[0]+34, cell[1], 255, 0, 255)
+                        cell[0] -= 1
+                for cell in win_text:
+                    print("win text")
+                    frameCanvas.SetPixel(cell[0]+34, cell[1] + 2, 255, 0, 255)
+                    cell[0] -= 1
+            elif check >= 84:
+                time.sleep(5)
+                break
+        check += 1
+        if i % 2 == 0:
+            for cell in wave1:
+                cell[0] += 1
+            for cell in wave2:
+                cell[0] += 1
+        else:
+            for cell in wave1:
                 cell[0] -= 1
-            for cell in player_text:
-                frameCanvas.SetPixel(cell[0]+34, cell[1], 230, 0, 230)
+            for cell in wave2:
                 cell[0] -= 1
-            for cell in winner_num:
-                frameCanvas.SetPixel(cell[0]+34, cell[1], 255, 0, 255)
-                cell[0] -= 1
-            for cell in win_text:
-                frameCanvas.SetPixel(cell[0]+34, cell[1] + 2, 255, 0, 255)
-                cell[0] -= 1
-        elif check >= 84:
-            time.sleep(5)
-            break
-    check += 1
-    if i % 2 == 0:
-        for cell in wave1:
-            cell[0] += 1
-        for cell in wave2:
-            cell[0] += 1
-    else:
-        for cell in wave1:
-            cell[0] -= 1
-        for cell in wave2:
-            cell[0] -= 1
-    i += 1
-    
-            
-print("\nExiting cleanly...")
-matrixDisplay.Clear()
+        i += 1
+        
+        
+                
+    print("\nExiting cleanly...")
+    matrixDisplay.Clear()
