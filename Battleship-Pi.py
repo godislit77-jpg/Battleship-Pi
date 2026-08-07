@@ -653,6 +653,8 @@ else:
                     frameCanvas.SetPixel(cell[0] - 15,cell[1],173,216,230)
             else:
                 frameCanvas.SetPixel(cell[0] - 15,cell[1],173,216,230)
+        #My The waves, ships, are above this time.sleep right, and they are printing correctly right? 
+        #What if you moved this time.sleep down to after the bomb / winner messages? 
         time.sleep(.2)
         if check <= 14:
             for cell in shipAnimation:
