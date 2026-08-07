@@ -639,6 +639,7 @@ else:
 
     while True:
         matrixDisplay.Clear()
+        frameCanvas.Clear()
         frameCanvas = matrixDisplay.SwapOnVSync(frameCanvas)
         for cell in wave1:
             frameCanvas.SetPixel(cell[1],cell[0],4,55,242)
