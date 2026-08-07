@@ -477,9 +477,7 @@ player2Ships = {
                             "location" : [[None, None], [None, None], [None, None], [None, None]]
                             },
         }
-
-debug = input("y/n")
-if debug == "y":     
+if __name__ == "__main__":  
     mode = input("Single or Multiplayer mode? (s/m): ").lower()
     while mode != 's' and mode != 'm':
         mode = input("Please select 's' or 'm': ").lower()
@@ -578,9 +576,6 @@ if debug == "y":
     print("GAME OVER")
     print(f"WINNER: {winner}")
 
-else:
-    mode = "s"
-    winner = "player"
     shipAnimation = [[7,31],[8,31],[6,32],[7,32],[8,32],[9,32],[6,33],[7,33],[8,33],
                     [9,33],[10,33],[6,34],[7,34],[8,34],[9,34],[10,34],[5,35],
                     [6,35],[7,35],[8,35],[9,35],[10,35],[5,36],[7,36],[8,36],[9,36],
@@ -639,7 +634,6 @@ else:
 
     while True:
         matrixDisplay.Clear()
-        frameCanvas.Clear()
         frameCanvas = matrixDisplay.SwapOnVSync(frameCanvas)
         for cell in wave1:
             frameCanvas.SetPixel(cell[1],cell[0],4,55,242)
@@ -653,9 +647,6 @@ else:
                     frameCanvas.SetPixel(cell[0] - 15,cell[1],173,216,230)
             else:
                 frameCanvas.SetPixel(cell[0] - 15,cell[1],173,216,230)
-        #My The waves, ships, are above this time.sleep right, and they are printing correctly right? 
-        #What if you moved this time.sleep down to after the bomb / winner messages? 
-        time.sleep(.2)
         if check <= 14:
             for cell in shipAnimation:
                 cell[1] -= 1
@@ -702,7 +693,6 @@ else:
                 cell_num = 0
                 frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
                 for cell in bomb:
-                    print("bomb")
                     if cell_num != 0:
                         frameCanvas.SetPixel(cell[0], cell[1], 255, 165, 0)  
                     cell_num += 1
@@ -711,7 +701,6 @@ else:
                 frameCanvas.SetPixel(bomb[0][0],bomb[0][1],200,20,20)
                 for cell in bomb:
                     if cell_num != 0 and cell_num <= 8:
-                        print("bomb")
                         frameCanvas.SetPixel(cell[0], cell[1], 255, 165, 0)   
                     if check > 33:
                         if cell_num > 8:
@@ -724,25 +713,23 @@ else:
                 for cell in shipAnimation:
                     cell[1] -= 1
                 for cell in grid:
-                    print("grid")
                     frameCanvas.SetPixel(cell[0], cell[1], 50, 50, 50)
                     cell[0] -= 1
                 for cell in player_text:
-                    print("player text")
                     frameCanvas.SetPixel(cell[0]+34, cell[1], 230, 0, 230)
                     cell[0] -= 1
                 if winner_num != None:
                     for cell in winner_num:
-                        print("winner num")
                         frameCanvas.SetPixel(cell[0]+34, cell[1], 255, 0, 255)
                         cell[0] -= 1
                 for cell in win_text:
-                    print("win text")
                     frameCanvas.SetPixel(cell[0]+34, cell[1] + 2, 255, 0, 255)
                     cell[0] -= 1
             elif check >= 84:
                 time.sleep(5)
+                matrixDisplay.Clear()
                 break
+        time.sleep(.2)
         check += 1
         if i % 2 == 0:
             for cell in wave1:
